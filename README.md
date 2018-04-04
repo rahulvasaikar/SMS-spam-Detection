@@ -24,8 +24,8 @@ We will be using a [dataset](https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Co
 
 Here's a preview of the data:
 ```
-ham     Fine if thats the way u feel. Thats the way its gota b
-spam	  England v Macedonia - dont miss the goals/team news. Txt ur national team to 87077 eg ENGLAND to 87077 Try:WALES, SCOTLAND 4txt/ú1.20 POBOXox36504W45WQ 16+
+ham         Fine if thats the way u feel. Thats the way its gota b
+spam	    England v Macedonia - dont miss the goals/team news. Txt ur national team to 87077 eg ENGLAND to 87077 Try:WALES, SCOTLAND 4txt/ú1.20 POBOXox36504W45WQ 16+
 ham	    Is that seriously how you spell his name?
 ham	    I‘m going to try for 2 months ha ha only joking
 ham	    So ü pay first lar... Then when is da stock comin...
@@ -38,7 +38,23 @@ The first column takes two values, 'ham' which signifies that the message is not
 The second column is the text content of the SMS message that is being classified.
 
 > Instructions:
-
 > * Import the dataset into a pandas dataframe using the read_table method. Because this is a tab separated dataset we will be using '\t' as the value for the 'sep' argument which specifies this format.
 > * Also, rename the column names by specifying a list ['label, 'sms_message'] to the 'names' argument of read_table().
 > * Print the first five values of the dataframe with the new column names.
+
+## Step 1.2: Data Preprocessing
+Now that we have a basic understanding of what our dataset looks like, lets convert our labels to binary variables, 0 to represent 'ham'(i.e. not spam) and 1 to represent 'spam' for ease of computation.
+
+You might be wondering why do we need to do this step? The answer to this lies in how scikit-learn handles inputs. Scikit-learn only deals with numerical values and hence if we were to leave our label values as strings, scikit-learn would do the conversion internally(more specifically, the string labels will be cast to unknown float values).
+
+Our model would still be able to make predictions if we left our labels as strings but we could have issues later when calculating performance metrics, for example when calculating our precision and recall scores. Hence, to avoid unexpected 'gotchas' later, it is good practice to have our categorical values be fed into our model as integers.
+
+> Instructions:
+> * Convert the values in the 'label' column to numerical values using map method as follows: {'ham':0, 'spam':1} This maps the 'ham' value to 0 and the 'spam' value to 1.
+> * Also, to get an idea of the size of the dataset we are dealing with, print out number of rows and columns using 'shape'.
+
+### Please Note:
+
+1. The CountVectorizer method automatically converts all tokenized words to their lower case form so that it does not treat words like 'He' and 'he' differently. It does this using the lowercase parameter which is by default set to True.
+2. It also ignores all punctuation so that words followed by a punctuation mark (for example: 'hello!') are not treated differently than the same words not prefixed or suffixed by a punctuation mark (for example: 'hello'). It does this using the token_pattern parameter which has a default regular expression which selects tokens of 2 or more alphanumeric characters.
+3. The third parameter to take note of is the stop_words parameter. Stop words refer to the most commonly used words in a language. They include words like 'am', 'an', 'and', 'the' etc. By setting this parameter value to english, CountVectorizer will automatically ignore all words(from our input text) that are found in the built in list of english stop words in scikit-learn. This is extremely helpful as stop words can skew our calculations when we are trying to find certain key words that are indicative of spam.
